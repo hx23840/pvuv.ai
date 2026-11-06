@@ -31,6 +31,7 @@
     "typecheck": "tsc --noEmit && tsc -p sdk --noEmit",
     "test:theme": "node --test scripts/theme.test.mjs",
     "test:delete-site": "node --test scripts/delete-site.test.mjs",
+    "test:llm": "node --test scripts/llm.test.mjs",
     "dev:proxy": "wrangler dev -c workers/proxy/wrangler.toml",
     "deploy:proxy": "wrangler deploy -c workers/proxy/wrangler.toml",
     "setup": "node scripts/setup.mjs"
