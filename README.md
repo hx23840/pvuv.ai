@@ -69,6 +69,12 @@ Most self-hosted analytics tools count traffic but treat every request as real. 
 - Configurable D1 retention with a storage panel, so a busy site stays inside D1's limits
 - Optional crawler categorisation (search vs AI-training vs SEO vs ad verification) from an imported public bot directory
 
+## Appearance in this fork
+
+The console, login page and shared dashboards support **System**, **Light** and **Dark** themes. Use the theme selector beside the page controls; System is the default. The choice stays in your browser, follows you between pages and syncs across tabs. Charts and configured logos adapt immediately.
+
+Theme behavior checks: `npm run test:theme`.
+
 ## Architecture
 
 ```

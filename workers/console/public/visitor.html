@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Visitor journeys — pvuv.ai</title>
+<script src="/theme.js"></script>
 <link rel="stylesheet" href="/console.css">
 <style>
   .card .v { font-size: 18px; }
@@ -21,17 +22,17 @@
   .evidence b { color: var(--muted); font-weight: 500; }
   /* timeline */
   .session { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 14px; }
-  .session-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid #1d222c; font-size: 13px; }
+  .session-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--surface-2); font-size: 13px; }
   .session-head b { font-size: 13.5px; }
   .tl { list-style: none; margin: 0; padding: 8px 16px 12px; }
   .tl li { position: relative; padding: 6px 0 6px 118px; }
   .tl li::before { content: ''; position: absolute; left: 88px; top: 0; bottom: 0; width: 2px; background: var(--border); }
   .tl li::after { content: ''; position: absolute; left: 84px; top: 13px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
-  .tl li.ev-out::after { background: #a78bfa; }
+  .tl li.ev-out::after { background: var(--purple); }
   .tl li.ev-custom::after { background: var(--good); }
-  .tl li.ev-form::after { background: #22d3ee; }
-  .tl li.ev-sys::after { background: #64748b; }
-  .tl li.hit { background: #16233a; border-radius: 6px; }
+  .tl li.ev-form::after { background: var(--cyan); }
+  .tl li.ev-sys::after { background: var(--muted-2); }
+  .tl li.hit { background: var(--info-bg); border-radius: 6px; }
   .tl .t { position: absolute; left: 0; width: 76px; text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; font-size: 12.5px; padding-top: 1px; }
   .tl .what { font-weight: 600; word-break: break-all; }
   .tl .meta { display: block; color: var(--muted); font-size: 12.5px; margin-top: 1px; }
@@ -39,9 +40,9 @@
   .tl .meta .err { color: var(--bad); }
   .tl .meta code { background: var(--bg); padding: 0 5px; border-radius: 4px; font-size: 11.5px; color: var(--text-2); }
   .ev-tag { display: inline-block; min-width: 44px; margin-right: 8px; padding: 0 7px; border-radius: 9px; font-size: 11.5px; text-align: center; background: var(--info-bg); color: var(--info); vertical-align: 1px; }
-  .ev-custom .ev-tag { background: #143324; color: var(--good-text); }
-  .ev-form .ev-tag { background: #103038; color: #67e8f9; }
-  .ev-out .ev-tag { background: #2a2140; color: #c4b5fd; }
+  .ev-custom .ev-tag { background: var(--good-bg); color: var(--good-text); }
+  .ev-form .ev-tag { background: var(--cyan-bg); color: var(--cyan-text); }
+  .ev-out .ev-tag { background: var(--purple-bg); color: var(--purple-text); }
   @media (max-width: 560px) {
     .tl li { padding-left: 70px; }
     .tl li::before { left: 56px; } .tl li::after { left: 52px; }
@@ -54,6 +55,7 @@
 <header>
   <a id="back" href="/sites.html" data-i18n="← dashboard">← dashboard</a><b id="title" data-i18n="Visitor journeys">Visitor journeys</b><span class="sub" id="siteLabel"></span>
   <div class="hdr-right">
+    <span data-theme-picker></span>
     <select id="lang" aria-label="Language"></select>
     <select id="period" aria-label="Date range">
       <option value="today" data-i18n="Today">Today</option>

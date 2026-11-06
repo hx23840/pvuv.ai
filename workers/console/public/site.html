@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dashboard — pvuv.ai</title>
+<script src="/theme.js"></script>
 <link rel="stylesheet" href="/console.css">
 <style>
   /* page-specific: realtime strip, shadow banner, site switcher, chart tooltip,
@@ -22,7 +23,7 @@
   .title-btn { font: 700 16px var(--font); color: var(--text); background: none; border: 0; padding: 4px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 7px; }
   .title-btn:hover { background: var(--surface-2); }
   .title-btn .caret { color: var(--muted); font-size: 11px; font-weight: 400; }
-  .switch-pop { position: absolute; top: 100%; left: 0; margin-top: 6px; width: 300px; max-width: 80vw; background: var(--surface); border: 1px solid var(--border-2); border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,.45); z-index: 30; padding: 8px; }
+  .switch-pop { position: absolute; top: 100%; left: 0; margin-top: 6px; width: 300px; max-width: 80vw; background: var(--surface); border: 1px solid var(--border-2); border-radius: var(--radius); box-shadow: 0 10px 30px var(--shadow); z-index: 30; padding: 8px; }
   .switch-pop input { width: 100%; background: var(--bg); margin-bottom: 6px; }
   .switch-pop ul { list-style: none; margin: 0; padding: 0; max-height: 320px; overflow-y: auto; }
   .switch-pop li { padding: 7px 9px; border-radius: 6px; cursor: pointer; display: flex; flex-direction: column; gap: 1px; }
@@ -50,12 +51,12 @@
   .anomalies { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
   .anomalies:empty { display: none; }
   .anomaly-hd { font-size: 12px; color: var(--muted); }
-  .anomaly { display: flex; align-items: baseline; gap: 10px; padding: 7px 12px; border-radius: 7px; border: 1px solid #2a3550; background: #141a26; color: var(--text-2); font-size: 12.5px; }
+  .anomaly { display: flex; align-items: baseline; gap: 10px; padding: 7px 12px; border-radius: 7px; border: 1px solid var(--info-border); background: var(--info-bg); color: var(--text-2); font-size: 12.5px; }
   .anomaly .ico { flex: 0 0 auto; }
   .anomaly .day { color: var(--muted); font-variant-numeric: tabular-nums; flex: 0 0 auto; }
   /* chart hover readout: crosshair + tooltip following the pointer */
   #chart { position: relative; }
-  .tt { position: absolute; z-index: 5; pointer-events: none; white-space: nowrap; background: var(--bg); border: 1px solid var(--border-2); border-radius: 6px; padding: 7px 9px; font-size: 12px; line-height: 1.45; box-shadow: 0 6px 18px rgba(0,0,0,.55); transform: translate(-50%, -100%); }
+  .tt { position: absolute; z-index: 5; pointer-events: none; white-space: nowrap; background: var(--bg); border: 1px solid var(--border-2); border-radius: 6px; padding: 7px 9px; font-size: 12px; line-height: 1.45; box-shadow: 0 6px 18px var(--shadow); transform: translate(-50%, -100%); }
   .tt[hidden] { display: none; }
   .tt .tl { color: var(--muted); margin-bottom: 2px; }
   .tt .tv { font-weight: 600; }
@@ -67,7 +68,7 @@
   .hm .hl { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
   .hm .hv { font-size: 20px; font-weight: 600; margin: 3px 0 6px; font-variant-numeric: tabular-nums; }
   .hm .sub { font-size: 11px; color: var(--muted); }
-  .hbar { height: 4px; border-radius: 3px; background: #21262f; overflow: hidden; position: relative; }
+  .hbar { height: 4px; border-radius: 3px; background: var(--surface-3); overflow: hidden; position: relative; }
   .hbar i { display: block; height: 100%; border-radius: 3px; }
   .hbar .lim { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--muted-2); }
   .hm.ok   .hv { color: var(--good-text); } .hm.ok   .hbar i { background: var(--good); }
@@ -79,10 +80,10 @@
   .fstep .fnum { color: var(--muted); width: 16px; flex: 0 0 auto; }
   .fstep select, .fstep input { background-color: var(--bg); }
   .fstep input { flex: 1; min-width: 0; }
-  .fstep .fx { background: #313d50; border: 0; color: var(--text-2); width: 22px; height: 22px; border-radius: 50%; flex: 0 0 auto; }
-  .fstep .fx:hover { background: #47566e; }
+  .fstep .fx { background: var(--border-3); border: 0; color: var(--text-2); width: 22px; height: 22px; border-radius: 50%; flex: 0 0 auto; }
+  .fstep .fx:hover { background: var(--muted-2); }
   .frow { display: flex; align-items: center; gap: 12px; margin: 6px 0; }
-  .fbar-wrap { position: relative; flex: 1; height: 30px; background: #141a26; border-radius: 6px; overflow: hidden; }
+  .fbar-wrap { position: relative; flex: 1; height: 30px; background: var(--info-bg); border-radius: 6px; overflow: hidden; }
   .fbar { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(59,130,246,.35); }
   .flabel { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 12.5px; white-space: nowrap; }
   .fstat { flex: 0 0 auto; min-width: 118px; text-align: right; font-variant-numeric: tabular-nums; font-size: 13px; }
@@ -94,14 +95,14 @@
   .fdrop { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 1px 0 7px; padding: 3px 0 3px 12px; border-left: 2px dashed var(--border-2); font-size: 12.5px; color: var(--muted); }
   .fdrop .fnum-drop { color: var(--warn); font-weight: 600; }
   .fchip { display: inline-flex; align-items: center; gap: 4px; padding: 0 8px; border-radius: 9px; background: var(--surface-2); color: var(--text-2); font-size: 11.5px; line-height: 19px; white-space: nowrap; }
-  .fchip.bad { background: #331414; color: var(--bad); }
-  .fchip.warn { background: #33290f; color: var(--warn); }
+  .fchip.bad { background: var(--bad-bg); color: var(--bad); }
+  .fchip.warn { background: var(--warn-bg); color: var(--warn); }
   .fseg { margin-top: 18px; }
   .fseg .worst { color: var(--warn); }
   .fseg td.conv { font-weight: 600; }
   /* first-run */
-  .onboard { margin: 0 0 18px; border-color: #2a3550; background: #141a26; }
-  .onboard pre { margin: 0; background: #0c1117; border: 1px solid #2b3a2e; border-radius: var(--radius); padding: 12px 14px; white-space: pre-wrap; word-break: break-all; font: 12.5px/1.5 var(--mono); color: #9ece9e; }
+  .onboard { margin: 0 0 18px; border-color: var(--info-border); background: var(--info-bg); }
+  .onboard pre { margin: 0; background: var(--code-bg); border: 1px solid var(--good-border); border-radius: var(--radius); padding: 12px 14px; white-space: pre-wrap; word-break: break-all; font: 12.5px/1.5 var(--mono); color: var(--good-text); }
   body.onboarding main > :not(#onboard):not(.secnav) { display: none; }
   body.onboarding .secnav { visibility: hidden; }
   /* mobile: suspicious-visitor cards replace the wide table */
@@ -109,12 +110,12 @@
   @media (max-width: 720px) { .mtable { display: none; } .mcards { display: block; } }
   /* AI report prose */
   .ai-md { font-size: 13.5px; line-height: 1.65; color: var(--text-2); }
-  .ai-md h3 { font-size: 14px; margin: 16px 0 6px; color: #e7ecf3; }
+  .ai-md h3 { font-size: 14px; margin: 16px 0 6px; color: var(--text); }
   .ai-md h3:first-child { margin-top: 0; }
   .ai-md p { margin: 6px 0; }
   .ai-md ul { margin: 6px 0; padding-left: 20px; }
   .ai-md li { margin: 3px 0; }
-  .ai-md strong { color: #e7ecf3; }
+  .ai-md strong { color: var(--text); }
 </style>
 </head>
 <body>
@@ -132,6 +133,7 @@
   </div>
   <a id="visitorsLink" href="#" data-i18n="visitors →">visitors →</a>
   <div class="hdr-right">
+    <span data-theme-picker></span>
   <select id="lang" aria-label="Language"></select>
   <select id="period" aria-label="Date range">
     <optgroup label="Rolling" data-i18n-label="Rolling">
@@ -715,7 +717,7 @@ function lineChart(points, metric) {
   const grid = [];
   for (let g = 0; g <= top + 1e-9; g += step) {
     const y = ys(g).toFixed(1);
-    grid.push(`<line x1="${P}" y1="${y}" x2="${W - 12}" y2="${y}" stroke="#222834" stroke-width="1"/>`
+    grid.push(`<line x1="${P}" y1="${y}" x2="${W - 12}" y2="${y}" stroke="var(--surface-3)" stroke-width="1"/>`
       + `<text x="${P - 8}" y="${(Number(y) + 3.5).toFixed(1)}" text-anchor="end">${esc(fmtMetric(metric, g))}</text>`);
   }
 
@@ -731,7 +733,7 @@ function lineChart(points, metric) {
   // no <title> here — the crosshair readout below covers every x-position, and a
   // native tooltip would pop up alongside it
   const dot = (p, i) => p.status === 'future' ? '' :
-    `<circle cx="${xs(i).toFixed(1)}" cy="${ys(p.value).toFixed(1)}" r="2.5" fill="${p.status === 'partial' ? '#0f1115' : '#3b82f6'}" stroke="#3b82f6" stroke-width="${p.status === 'partial' ? 1.5 : 0}"/>`;
+    `<circle cx="${xs(i).toFixed(1)}" cy="${ys(p.value).toFixed(1)}" r="2.5" fill="${p.status === 'partial' ? 'var(--bg)' : 'var(--accent)'}" stroke="var(--accent)" stroke-width="${p.status === 'partial' ? 1.5 : 0}"/>`;
   const lstep = Math.ceil(points.length / 8);
   const labels = points.filter((_, i) => i % lstep === 0);
 
@@ -753,22 +755,22 @@ function lineChart(points, metric) {
       const x = P + i * cw;
       // floor the opacity so a small but real share is still visible
       const op = (0.18 + 0.82 * Math.min(share, 1)).toFixed(2);
-      return `<rect x="${x.toFixed(1)}" y="${SY}" width="${Math.max(cw - 1, 1).toFixed(1)}" height="${SH}" rx="1.5" fill="#f87171" opacity="${op}"/>`;
+      return `<rect x="${x.toFixed(1)}" y="${SY}" width="${Math.max(cw - 1, 1).toFixed(1)}" height="${SH}" rx="1.5" fill="var(--bad)" opacity="${op}"/>`;
     }).join('');
   }
 
   const VH = H + (hasInvalid ? 20 : 0);
   el.innerHTML = `<svg viewBox="0 0 ${W} ${VH}" style="width:100%;display:block">
     ${grid.join('')}
-    ${solid ? `<polyline points="${solid}" fill="none" stroke="#3b82f6" stroke-width="2"/>` : ''}
-    ${dashed ? `<polyline points="${dashed}" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4 3" opacity="0.75"/>` : ''}
+    ${solid ? `<polyline points="${solid}" fill="none" stroke="var(--accent)" stroke-width="2"/>` : ''}
+    ${dashed ? `<polyline points="${dashed}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4 3" opacity="0.75"/>` : ''}
     ${points.map(dot).join('')}
     ${strip}
     ${hasInvalid ? `<text x="${P - 8}" y="${SY + SH - 1}" text-anchor="end" opacity="0.75">${esc(t('invalid'))}</text>` : ''}
     ${labels.map((p) => `<text x="${xs(points.indexOf(p))}" y="${VH - 6}" text-anchor="middle" ${p.status === 'future' ? 'opacity="0.4"' : ''}>${esc(p.label)}</text>`).join('')}
     <g id="chairG" opacity="0">
-      <line id="chairL" y1="${PT}" y2="${H - P}" stroke="#5b6472" stroke-width="1" stroke-dasharray="3 3"/>
-      <circle id="chairD" r="4" fill="#3b82f6" stroke="#0f1115" stroke-width="2"/>
+      <line id="chairL" y1="${PT}" y2="${H - P}" stroke="var(--muted-2)" stroke-width="1" stroke-dasharray="3 3"/>
+      <circle id="chairD" r="4" fill="var(--accent)" stroke="var(--bg)" stroke-width="2"/>
     </g>
     <rect id="chairHit" x="${P}" y="0" width="${W - P - 12}" height="${VH}" fill="transparent" style="cursor:crosshair"/>
   </svg>
@@ -898,7 +900,7 @@ async function loadChart() {
 
 function donut(t) {
   const total = t.clean + t.suspect + t.bot + t.crawler || 1;
-  const colors = { clean: '#34d399', suspect: '#fbbf24', bot: '#f87171', crawler: '#64748b' };
+  const colors = { clean: 'var(--good)', suspect: 'var(--warn)', bot: 'var(--bad)', crawler: 'var(--muted-2)' };
   let off = 0;
   const C = 2 * Math.PI * 40;
   const segs = Object.keys(colors).map((k) => {
@@ -913,13 +915,13 @@ function donut(t) {
   document.getElementById('quality').innerHTML = `
     <div style="display:flex;gap:20px;align-items:center">
       <svg viewBox="0 0 120 120" width="130">${segs}
-        <text x="60" y="58" text-anchor="middle" style="font-size:15px;fill:#e6e8eb;font-weight:700">${((t.clean + t.suspect) / total * 100).toFixed(1)}%</text>
+        <text x="60" y="58" text-anchor="middle" style="font-size:15px;fill:var(--text);font-weight:700">${((t.clean + t.suspect) / total * 100).toFixed(1)}%</text>
         <text x="60" y="74" text-anchor="middle">${esc(T('counted'))}</text></svg>
       <div class="legend" style="flex-direction:column;align-items:flex-start">
-        <span><i class="dot" style="background:#34d399"></i>${esc(T('clean'))} ${fmt(t.clean)}</span>
-        <span><i class="dot" style="background:#fbbf24"></i>${esc(T('suspect'))} ${fmt(t.suspect)} <span class="muted">${esc(T('(counted, flagged)'))}</span></span>
-        <span><i class="dot" style="background:#f87171"></i>${esc(T('bot'))} ${fmt(t.bot)} <span class="muted">${esc(T('(excluded)'))}</span></span>
-        <span><i class="dot" style="background:#64748b"></i>${esc(T('verified crawler'))} ${fmt(t.crawler)} <span class="muted">${esc(T('(separate)'))}</span></span>
+        <span><i class="dot" style="background:var(--good)"></i>${esc(T('clean'))} ${fmt(t.clean)}</span>
+        <span><i class="dot" style="background:var(--warn)"></i>${esc(T('suspect'))} ${fmt(t.suspect)} <span class="muted">${esc(T('(counted, flagged)'))}</span></span>
+        <span><i class="dot" style="background:var(--bad)"></i>${esc(T('bot'))} ${fmt(t.bot)} <span class="muted">${esc(T('(excluded)'))}</span></span>
+        <span><i class="dot" style="background:var(--muted-2)"></i>${esc(T('verified crawler'))} ${fmt(t.crawler)} <span class="muted">${esc(T('(separate)'))}</span></span>
       </div>
     </div>`;
 }
@@ -1158,7 +1160,7 @@ async function loadAiReport() {
       btn.disabled = true;
       btn.title = 'Configure an AI provider in Settings first';
       document.getElementById('aiReport').innerHTML =
-        '<p class="muted">AI reports are not configured. Set a provider, model and API key under <a href="/sites.html" style="color:#7ab3ff;text-decoration:none">Settings ⚙</a>.</p>';
+        '<p class="muted">AI reports are not configured. Set a provider, model and API key under <a href="/sites.html" style="color:var(--link);text-decoration:none">Settings ⚙</a>.</p>';
       return;
     }
     btn.disabled = false;
@@ -1173,9 +1175,9 @@ document.getElementById('aiGen').addEventListener('click', async () => {
   try {
     const r = await guard(await fetch(`/api/sites/${site}/ai_report?period=${document.getElementById('period').value}`, { method: 'POST' }));
     const d = await r.json();
-    if (!r.ok) el.innerHTML = `<p class="err" style="color:#f87171">${esc(d.error || t('generation failed'))}</p>`;
+    if (!r.ok) el.innerHTML = `<p class="err" style="color:var(--bad)">${esc(d.error || t('generation failed'))}</p>`;
     else renderReport(d);
-  } catch { el.innerHTML = `<p class="err" style="color:#f87171">${te('generation failed')}</p>`; }
+  } catch { el.innerHTML = `<p class="err" style="color:var(--bad)">${te('generation failed')}</p>`; }
   finally { btn.disabled = false; btn.textContent = label; }
 });
 
@@ -1211,7 +1213,7 @@ async function loadAdguard() {
   const tierRow = (name) => {
     const t = d.tiers[name]; if (!t) return '';
     const cur = d.current_mode === name;
-    return `<tr${cur ? ' style="background:#141a26"' : ''}>
+    return `<tr${cur ? ' style="background:var(--info-bg)"' : ''}>
       <td>${te(MODE_LABEL[name] || name)}${cur ? ` <span class="muted">${te('· current')}</span>` : ''}</td>
       <td class="num">${pctf(t.block_rate)}</td>
       <td class="num">${fmt(t.block)}</td>
@@ -1226,7 +1228,7 @@ async function loadAdguard() {
   el.innerHTML = `
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
       <label style="font-size:13px">${te('Mode')}
-        <select id="agModeSel" style="margin-left:6px;background:#0f1115;color:inherit;border:1px solid #313847;border-radius:6px;padding:5px 8px;font:inherit">
+        <select id="agModeSel" style="margin-left:6px;background:var(--bg);color:inherit;border:1px solid var(--border-2);border-radius:6px;padding:5px 8px;font:inherit">
           ${MODES.map((m) => `<option value="${m}"${m === d.current_mode ? ' selected' : ''}>${te(MODE_LABEL[m] || m)}</option>`).join('')}
         </select>
       </label>
@@ -1419,7 +1421,7 @@ function renderTraffic(rows, fold) {
 function sparkline(minutes) {
   const w = 90, h = 20, n = minutes.length, max = Math.max(...minutes, 1);
   const pts = minutes.map((v, i) => `${(i * w / Math.max(n - 1, 1)).toFixed(1)},${(h - 2 - v * (h - 4) / max).toFixed(1)}`).join(' ');
-  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><polyline points="${pts}" fill="none" stroke="#34d399" stroke-width="1.5"/></svg>`;
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><polyline points="${pts}" fill="none" stroke="var(--good)" stroke-width="1.5"/></svg>`;
 }
 async function pollRealtime() {
   try {
@@ -1667,7 +1669,7 @@ function renderFunnelSteps() {
 
 const fmsg = (text, bad) => {
   const el = document.getElementById('funnelMsg');
-  el.textContent = text; el.style.color = bad ? '#f87171' : '';
+  el.textContent = text; el.style.color = bad ? 'var(--bad)' : '';
   if (text) setTimeout(() => { if (el.textContent === text) el.textContent = ''; }, 4000);
 };
 
@@ -1844,7 +1846,7 @@ const VITAL_META = { // key → [label, help]
   ttfb_ms: ['TTFB', 'Time To First Byte — server response speed'],
 };
 const RATING_META = {
-  good: ['#34d399', 'Good'], needs_improvement: ['#fbbf24', 'Needs improvement'], poor: ['#f87171', 'Poor'],
+  good: ['var(--good)', 'Good'], needs_improvement: ['var(--warn)', 'Needs improvement'], poor: ['var(--bad)', 'Poor'],
 };
 const fmtVital = (key, v) => v == null ? '–'
   : key === 'cls' ? Number(v).toFixed(3)
@@ -1858,7 +1860,7 @@ async function loadVitals() {
   sec.hidden = false;
   const tiles = Object.keys(VITAL_META).map((k) => {
     const m = (d.metrics || {})[k] || {};
-    const r = RATING_META[m.rating] || ['#8b93a1', ''];
+    const r = RATING_META[m.rating] || ['var(--muted)', ''];
     return `<div class="card" title="${esc(t(VITAL_META[k][1]))}" style="border-left:3px solid ${r[0]}">
       <div class="v">${fmtVital(k, m.p75)}</div>
       <div class="k">${esc(VITAL_META[k][0])} <span class="muted">p75</span></div>
@@ -1870,7 +1872,7 @@ async function loadVitals() {
     ? `<h3 style="font-size:13px;margin:16px 0 8px">${te('Slowest pages (LCP p75)')}</h3>`
       + `<table><tr><th>${te('Path')}</th><th class="num">${te('Loads')}</th><th class="num">LCP p75</th></tr>`
       + d.pages.map((p) => `<tr><td>${esc(p.path)}</td><td class="num">${fmt(p.n)}</td>`
-        + `<td class="num" style="color:${(RATING_META[p.rating] || ['#8b93a1'])[0]}">${fmtVital('lcp_ms', p.lcp_p75)}</td></tr>`).join('')
+        + `<td class="num" style="color:${(RATING_META[p.rating] || ['var(--muted)'])[0]}">${fmtVital('lcp_ms', p.lcp_p75)}</td></tr>`).join('')
       + '</table>'
     : '';
   el.innerHTML = `<p class="muted" style="margin:0 0 10px;font-size:12px">${te('Real-user Core Web Vitals from clean traffic — the same metrics Google Search uses. p75 = 75% of page loads were at least this fast.')}</p>`
@@ -1889,7 +1891,7 @@ function renderShareModal() {
     const shareUrl = `${location.origin}/public.html?site=${encodeURIComponent(site)}&k=${encodeURIComponent(tok)}`;
     body.innerHTML = `<p style="margin:4px 0 10px">${te('Sharing is ON — anyone with this link can view a read-only dashboard (aggregates only, no visitor-level data).')}</p>
       <div style="display:flex;gap:8px;margin-bottom:14px">
-        <input id="shareUrl" readonly value="${esc(shareUrl)}" style="flex:1;background:#0f1115;color:inherit;border:1px solid #313847;border-radius:6px;padding:7px 9px;font:12.5px ui-monospace,monospace">
+        <input id="shareUrl" readonly value="${esc(shareUrl)}" style="flex:1;background:var(--bg);color:inherit;border:1px solid var(--border-2);border-radius:6px;padding:7px 9px;font:12.5px ui-monospace,monospace">
         <button id="shareCopy" class="btn">${te('Copy')}</button>
       </div>
       <div style="display:flex;gap:8px">
@@ -1962,8 +1964,8 @@ async function loadCtit(hasGoals) {
   const bars = d.buckets.map((b) => `
     <div style="display:flex;align-items:center;gap:10px;margin:3px 0">
       <span class="muted" style="width:56px;text-align:right;font-size:12px">${esc(b.label)}</span>
-      <div style="flex:1;background:#1d222c;border-radius:4px;height:14px;overflow:hidden">
-        <div style="width:${(b.n / max * 100).toFixed(1)}%;height:100%;background:${b.label === '<10s' && d.flag ? '#f87171' : '#3b82f6'}"></div>
+      <div style="flex:1;background:var(--surface-2);border-radius:4px;height:14px;overflow:hidden">
+        <div style="width:${(b.n / max * 100).toFixed(1)}%;height:100%;background:${b.label === '<10s' && d.flag ? 'var(--bad)' : 'var(--accent)'}"></div>
       </div>
       <span class="num" style="width:70px;font-size:12px">${fmt(b.n)} <span class="muted">${pctf(b.n / d.n)}</span></span>
     </div>`).join('');
@@ -1972,7 +1974,7 @@ async function loadCtit(hasGoals) {
     + bars
     + `<p class="muted" style="margin:10px 0 0;font-size:12.5px">${fmt(d.n)} ${te('conversions')} · ${te('median')} ${dur(d.median_ms)}`
     + (d.flag === 'fast_spike'
-      ? ` · <span style="color:#f87171">${te('⚠ suspicious: ')}${pctf(d.fast_share)} ${te('convert within 10s of arriving')}</span>` : '')
+      ? ` · <span style="color:var(--bad)">${te('⚠ suspicious: ')}${pctf(d.fast_share)} ${te('convert within 10s of arriving')}</span>` : '')
     + '</p>';
 }
 document.getElementById('utmDim').addEventListener('change', loadUtm);

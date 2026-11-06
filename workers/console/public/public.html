@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Analytics — pvuv.ai</title>
+<script src="/theme.js"></script>
 <link rel="stylesheet" href="/console.css">
 <style>
   header .pub { font-size: 11.5px; color: var(--muted); border: 1px solid var(--border-2); border-radius: 10px; padding: 1px 8px; white-space: nowrap; }
@@ -19,6 +20,7 @@
 <header>
   <b id="siteName">…</b><span class="pub" data-i18n="public dashboard">public dashboard</span>
   <div class="hdr-right">
+    <span data-theme-picker></span>
     <select id="period" aria-label="Date range">
       <option value="today" data-i18n="Today">Today</option>
       <option value="7d" data-i18n="Last 7 days">Last 7 days</option>
@@ -66,7 +68,7 @@ const CHANNEL_LABEL = {
   ai: 'AI assistants', video: 'Video', referral: 'Referral', '(unknown)': '(unknown)',
 };
 const VITAL_META = { lcp_ms: 'LCP', inp_ms: 'INP*', cls: 'CLS', fcp_ms: 'FCP', ttfb_ms: 'TTFB' };
-const RATING_COLOR = { good: '#34d399', needs_improvement: '#fbbf24', poor: '#f87171' };
+const RATING_COLOR = { good: 'var(--good)', needs_improvement: 'var(--warn)', poor: 'var(--bad)' };
 const fmtVital = (k, v) => v == null ? '–' : k === 'cls' ? Number(v).toFixed(3) : v >= 1000 ? (v / 1000).toFixed(2) + 's' : Math.round(v) + 'ms';
 
 function fail() {
@@ -93,8 +95,8 @@ function lineChart(points) {
   const step = Math.ceil(points.length / 8);
   const labels = points.filter((_, i) => i % step === 0);
   el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block">
-    <polyline points="${solid}" fill="none" stroke="#3b82f6" stroke-width="2"/>
-    ${points.map((p, i) => p.status === 'future' ? '' : `<circle cx="${xs(i).toFixed(1)}" cy="${ys(p.value).toFixed(1)}" r="2.4" fill="#3b82f6"><title>${esc(p.label)}: ${fmt(p.value)}</title></circle>`).join('')}
+    <polyline points="${solid}" fill="none" stroke="var(--accent)" stroke-width="2"/>
+    ${points.map((p, i) => p.status === 'future' ? '' : `<circle cx="${xs(i).toFixed(1)}" cy="${ys(p.value).toFixed(1)}" r="2.4" fill="var(--accent)"><title>${esc(p.label)}: ${fmt(p.value)}</title></circle>`).join('')}
     ${labels.map((p) => `<text x="${xs(points.indexOf(p)).toFixed(1)}" y="${H - 8}" text-anchor="middle">${esc(p.label)}</text>`).join('')}
     <text x="${P - 6}" y="${(ys(max) + 4).toFixed(1)}" text-anchor="end">${fmt(max)}</text>
   </svg>`;
@@ -136,7 +138,7 @@ async function load() {
     sec.hidden = false;
     document.getElementById('vitals').innerHTML = `<div class="cards cards-5">` + Object.keys(VITAL_META).map((k) => {
       const m = (d.metrics || {})[k] || {};
-      const color = RATING_COLOR[m.rating] || '#8b93a1';
+      const color = RATING_COLOR[m.rating] || 'var(--muted)';
       return `<div class="card" style="border-left:3px solid ${color}"><div class="v">${fmtVital(k, m.p75)}</div><div class="k">${esc(VITAL_META[k])} <span class="muted">p75</span></div></div>`;
     }).join('') + '</div>';
   } catch { document.getElementById('vitalsSec').hidden = true; }

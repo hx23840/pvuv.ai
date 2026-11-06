@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sites — pvuv.ai</title>
+<script src="/theme.js"></script>
 <link rel="stylesheet" href="/console.css">
 <style>
   .brand img.logo { height: 28px; display: block; }
@@ -12,7 +13,7 @@
   .toolbar { display: flex; align-items: center; gap: 8px; }
   .scards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-top: 14px; }
   .scard { display: block; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; color: inherit; transition: border-color .12s, background .12s, transform .12s; }
-  .scard:hover { border-color: var(--border-3); background: #191d26; text-decoration: none; transform: translateY(-1px); }
+  .scard:hover { border-color: var(--border-3); background: var(--surface-2); text-decoration: none; transform: translateY(-1px); }
   .scard .name { font-weight: 700; font-size: 15px; }
   .scard .dom { color: var(--muted); font-size: 12px; margin-top: 2px; word-break: break-all; }
   .scard .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
@@ -29,21 +30,21 @@
   form.create label { font-size: 13px; color: var(--muted); display: block; }
   form.create input, form.create select, form.create textarea { width: 100%; margin-top: 3px; background-color: var(--bg); }
   form.create button[type="submit"], form.create button.act { grid-column: span 2; justify-self: start; }
-  form.create button { min-height: 32px; padding: 5px 16px; border: 1px solid var(--accent-2); border-radius: var(--radius-sm); background: var(--accent-2); color: #fff; font-weight: 600; }
+  form.create button { min-height: 32px; padding: 5px 16px; border: 1px solid var(--accent-2); border-radius: var(--radius-sm); background: var(--accent-2); color: var(--on-accent); font-weight: 600; }
   form.create button:hover { background: var(--accent-3); border-color: var(--accent-3); }
   form.create button[type="button"] { background: var(--surface); border-color: var(--border-2); color: var(--text-2); font-weight: 500; }
   form.create button[type="button"]:hover { background: var(--surface-2); border-color: var(--border-3); color: var(--text); }
   form.create button.danger { background: var(--bad-bg); border-color: var(--bad-border); color: var(--bad-text); }
   form.create .actions { grid-column: span 2; display: flex; gap: 8px; flex-wrap: wrap; }
   form.create .section-title { grid-column: span 2; margin: 4px 0 -4px; }
-  form.create .section-title strong { font-size: 13px; color: #c7cdd8; }
+  form.create .section-title strong { font-size: 13px; color: var(--text-2); }
   form.create .section-title span { font-size: 12px; color: var(--muted); }
   form.create .subform { grid-column: span 2; border-top: 1px solid var(--border); padding-top: 16px; margin-top: 4px; }
   .full { grid-column: span 2; }
-  .snippet { display: none; margin-top: 14px; background: #0c1117; border: 1px solid #2b3a2e; border-radius: var(--radius); padding: 14px; }
-  .snippet pre { margin: 8px 0 0; white-space: pre-wrap; word-break: break-all; font-size: 12.5px; color: #9ece9e; font-family: var(--mono); }
+  .snippet { display: none; margin-top: 14px; background: var(--code-bg); border: 1px solid var(--good-border); border-radius: var(--radius); padding: 14px; }
+  .snippet pre { margin: 8px 0 0; white-space: pre-wrap; word-break: break-all; font-size: 12.5px; color: var(--good-text); font-family: var(--mono); }
   .err { color: var(--bad); font-size: 13px; grid-column: span 2; min-height: 1em; margin: 0; }
-  .helpbox { font-size: 12px; color: var(--muted); background: #0c1117; border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; }
+  .helpbox { font-size: 12px; color: var(--muted); background: var(--code-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; }
   @media (max-width: 560px) { form.create { grid-template-columns: 1fr; } form.create button[type="submit"], form.create .actions, form.create .section-title, form.create .subform, .err, .full { grid-column: span 1; } }
   #ranking th { white-space: nowrap; }
 </style>
@@ -53,6 +54,7 @@
 <header>
   <span class="brand" id="brand">pvuv.ai</span>
   <div class="hdr-right">
+    <span data-theme-picker></span>
     <select id="lang" aria-label="Language"></select>
     <a href="/health.html" id="selfcheckLink" class="btn" data-i18n="Self-check">Self-check</a>
     <button id="logout" class="btn" data-i18n="Sign out">Sign out</button>
@@ -88,7 +90,7 @@
   <section id="rankingSection" hidden style="margin-top:24px">
     <div class="head">
       <h2 data-i18n="Site ranking · clean traffic">Site ranking · clean traffic</h2>
-      <span style="font-size:12px;color:#8b93a1" data-i18n="ranking-help">Ranked by external clean pageviews — bots &amp; crawlers excluded, mutual visits between your own sites don't count.</span>
+      <span style="font-size:12px;color:var(--muted)" data-i18n="ranking-help">Ranked by external clean pageviews — bots &amp; crawlers excluded, mutual visits between your own sites don't count.</span>
     </div>
     <div class="panel" id="ranking"><p class="loading" data-i18n="loading…">loading…</p></div>
   </section>
@@ -110,11 +112,11 @@
           <option value="strict" data-i18n="Strictest — clean + interacted">Strictest — clean + interacted</option>
         </select></label></div>
       <div><label><span data-i18n="AdSense client (optional)">AdSense client (optional)</span><input id="adclient" placeholder="ca-pub-1234567890123456"></label></div>
-      <div><label><span data-i18n="Timezone">Timezone</span> <span style="color:#e0a34a" data-i18n="(can't be changed later)">(can't be changed later)</span>
+      <div><label><span data-i18n="Timezone">Timezone</span> <span style="color:var(--warn)" data-i18n="(can't be changed later)">(can't be changed later)</span>
         <input id="tz" list="tzlist" autocomplete="off" placeholder="Search timezone…" data-i18n-ph="Search timezone…"></label></div>
       <div><label><span data-i18n="Engagement threshold (seconds)">Engagement threshold (seconds)</span>
         <input id="engaged" type="number" min="1" max="300" value="15" placeholder="15">
-        <span style="color:#8b93a1;font-size:12px">a visit is "engaged" (not a bounce) after this dwell time. GA4 default 10s; we default 15s.</span>
+        <span style="color:var(--muted);font-size:12px">a visit is "engaged" (not a bounce) after this dwell time. GA4 default 10s; we default 15s.</span>
       </label></div>
       <p class="err" id="err"></p>
       <button type="submit" data-i18n="Create site">Create site</button>
@@ -122,7 +124,7 @@
     <div class="snippet" id="snippet">
       <b data-i18n="Site created — embed this snippet:">Site created — embed this snippet:</b>
       <pre id="snippetCode"></pre>
-      <p style="color:#8b93a1;font-size:12px;margin:8px 0 0">
+      <p style="color:var(--muted);font-size:12px;margin:8px 0 0">
         data-api must point at your ingest host — adjust it if yours is not
         in.&lt;your-domain&gt;. See DEPLOY.md.
       </p>
@@ -141,80 +143,80 @@
       <p class="err" id="hsMsg"></p>
       <button type="submit" data-i18n="Save">Save</button>
     </form>
-    <p style="margin:14px 0 0;font-size:12.5px;color:#8b93a1;border-top:1px solid #262b36;padding-top:12px">
+    <p style="margin:14px 0 0;font-size:12.5px;color:var(--muted);border-top:1px solid var(--border);padding-top:12px">
       <span data-i18n="logo-help">Logos/favicon can be URLs or files you place in <code>workers/console/public/</code>.
-      The console header (dark) uses the light logo.</span> · <a href="/health.html" style="color:#7ab3ff;text-decoration:none" data-i18n="Run self-check ↗">Run self-check ↗</a>
+      The header selects the matching logo for the current theme.</span> · <a href="/health.html" style="color:var(--link);text-decoration:none" data-i18n="Run self-check ↗">Run self-check ↗</a>
     </p>
-    <form class="create" id="tzSettings" style="margin-top:16px;border-top:1px solid #262b36;padding-top:16px">
+    <form class="create" id="tzSettings" style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px">
       <div class="full"><label><span data-i18n="Default timezone for new sites">Default timezone for new sites</span>
         <input id="tzDefault" list="tzlist" autocomplete="off" placeholder="Search timezone…" data-i18n-ph="Search timezone…"></label></div>
       <p class="err" id="tzMsg"></p>
       <button type="submit" data-i18n="Save default timezone">Save default timezone</button>
     </form>
-    <form class="create" id="aiSettings" style="margin-top:16px;border-top:1px solid #262b36;padding-top:16px">
-      <div class="full" style="margin-bottom:4px"><strong style="font-size:13px;color:#c7cdd8" data-i18n="AI analysis reports">AI analysis reports</strong>
-        <span style="font-size:12px;color:#8b93a1" data-i18n="ai-help"> — used on each site's dashboard to generate a written summary.</span></div>
+    <form class="create" id="aiSettings" style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px">
+      <div class="full" style="margin-bottom:4px"><strong style="font-size:13px;color:var(--text-2)" data-i18n="AI analysis reports">AI analysis reports</strong>
+        <span style="font-size:12px;color:var(--muted)" data-i18n="ai-help"> — used on each site's dashboard to generate a written summary.</span></div>
       <div><label><span data-i18n="Provider (API format)">Provider (API format)</span>
         <select id="aiProvider">
           <option value="openai" data-i18n="OpenAI-compatible">OpenAI-compatible</option>
           <option value="anthropic">Anthropic (Claude)</option>
         </select></label></div>
       <div><label><span data-i18n="Model name">Model name</span><input id="aiModel" maxlength="120" placeholder="gpt-4o-mini / claude-opus-4-8"></label></div>
-      <div class="full"><label><span data-i18n="API base URL">API base URL</span> <span style="color:#8b93a1" data-i18n="(optional — blank uses the provider default)">(optional — blank uses the provider default)</span>
+      <div class="full"><label><span data-i18n="API base URL">API base URL</span> <span style="color:var(--muted)" data-i18n="(optional — blank uses the provider default)">(optional — blank uses the provider default)</span>
         <input id="aiBaseUrl" maxlength="300" placeholder="https://api.openai.com/v1 or https://api.anthropic.com"></label></div>
-      <div><label><span data-i18n="API key">API key</span> <span id="aiKeyState" style="color:#8b93a1"></span>
+      <div><label><span data-i18n="API key">API key</span> <span id="aiKeyState" style="color:var(--muted)"></span>
         <input id="aiKey" type="password" maxlength="300" autocomplete="off" placeholder="sk-…"></label></div>
       <div><label><span data-i18n="Report language">Report language</span>
         <select id="aiLang"><option value="en">English</option><option value="zh">中文</option></select></label></div>
       <p class="err" id="aiMsg"></p>
       <button type="submit" data-i18n="Save AI settings">Save AI settings</button>
     </form>
-    <form class="create" id="tokenSettings" style="margin-top:16px;border-top:1px solid #262b36;padding-top:16px">
-      <div class="full" style="margin-bottom:4px"><strong style="font-size:13px;color:#c7cdd8" data-i18n="API tokens">API tokens</strong>
-        <span style="font-size:12px;color:#8b93a1" data-i18n="token-help"> — read-only credentials for the CLI, the MCP server (so your own chatbot can query this data) and other integrations. Shown once at creation.</span></div>
+    <form class="create" id="tokenSettings" style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px">
+      <div class="full" style="margin-bottom:4px"><strong style="font-size:13px;color:var(--text-2)" data-i18n="API tokens">API tokens</strong>
+        <span style="font-size:12px;color:var(--muted)" data-i18n="token-help"> — read-only credentials for the CLI, the MCP server (so your own chatbot can query this data) and other integrations. Shown once at creation.</span></div>
       <div><label><span data-i18n="Token name">Token name</span><input id="tokName" maxlength="60" placeholder="Claude Desktop"></label></div>
       <div><label><span data-i18n="Scope">Scope</span>
         <select id="tokSite"><option value="" data-i18n="All my sites">All my sites</option></select></label></div>
       <p class="err" id="tokMsg"></p>
-      <div class="full" id="tokNew" hidden style="background:#0c1117;border:1px solid #2b3a2e;border-radius:8px;padding:12px;margin-bottom:4px">
-        <div style="font-size:12px;color:#9ece9e;margin-bottom:6px" data-i18n="Copy it now — it cannot be shown again.">Copy it now — it cannot be shown again.</div>
-        <code id="tokValue" style="font-size:12.5px;word-break:break-all;color:#e6e8eb"></code>
+      <div class="full" id="tokNew" hidden style="background:var(--code-bg);border:1px solid var(--good-border);border-radius:8px;padding:12px;margin-bottom:4px">
+        <div style="font-size:12px;color:var(--good-text);margin-bottom:6px" data-i18n="Copy it now — it cannot be shown again.">Copy it now — it cannot be shown again.</div>
+        <code id="tokValue" style="font-size:12.5px;word-break:break-all;color:var(--text)"></code>
       </div>
-      <div class="full" id="tokList" style="font-size:12px;color:#8b93a1"></div>
+      <div class="full" id="tokList" style="font-size:12px;color:var(--muted)"></div>
       <button type="submit" data-i18n="Create token">Create token</button>
     </form>
-    <form class="create" id="botdirSettings" style="margin-top:16px;border-top:1px solid #262b36;padding-top:16px">
-      <div class="full" style="margin-bottom:4px"><strong style="font-size:13px;color:#c7cdd8" data-i18n="Crawler directory">Crawler directory</strong>
-        <span style="font-size:12px;color:#8b93a1" data-i18n="botdir-help"> — optional. Import a public bots-and-agents catalogue to label crawler traffic by kind (search / AI training / SEO / ads). Classification only: it never changes scoring, verdicts or ad protection.</span></div>
+    <form class="create" id="botdirSettings" style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px">
+      <div class="full" style="margin-bottom:4px"><strong style="font-size:13px;color:var(--text-2)" data-i18n="Crawler directory">Crawler directory</strong>
+        <span style="font-size:12px;color:var(--muted)" data-i18n="botdir-help"> — optional. Import a public bots-and-agents catalogue to label crawler traffic by kind (search / AI training / SEO / ads). Classification only: it never changes scoring, verdicts or ad protection.</span></div>
       <div class="full"><label><span data-i18n="Directory JSON file">Directory JSON file</span>
         <input id="botdirFile" type="file" accept=".json,application/json"></label></div>
       <div class="full"><label><span data-i18n="…or paste the JSON">…or paste the JSON</span>
         <textarea id="botdirText" rows="4" style="font:12px/1.4 var(--mono)" placeholder='[{"name":"Googlebot","category":"Search"}, …]'></textarea></label></div>
       <p class="err" id="botdirMsg"></p>
-      <div class="full" id="botdirState" style="font-size:12px;color:#8b93a1"></div>
+      <div class="full" id="botdirState" style="font-size:12px;color:var(--muted)"></div>
       <div class="actions"><button type="submit" data-i18n="Import directory">Import directory</button>
       <button type="button" id="botdirClear" class="danger" data-i18n="Remove">Remove</button></div>
     </form>
-    <form class="create" id="cfSettings" style="margin-top:16px;border-top:1px solid #262b36;padding-top:16px">
-      <div class="full" style="margin-bottom:4px"><strong style="font-size:13px;color:#c7cdd8" data-i18n="Cloudflare edge requests">Cloudflare edge requests</strong>
-        <span style="font-size:12px;color:#8b93a1" data-i18n="cf-help"> — optional, advanced. The tracking script only sees visitors whose browser ran JavaScript. AI crawlers and scrapers fetch your HTML and leave, so they never appear. Cloudflare saw all of them: add a read-only API token and the daily job pulls those request counts, so your dashboard can show what the script missed. Leave it empty and nothing changes.</span></div>
+    <form class="create" id="cfSettings" style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px">
+      <div class="full" style="margin-bottom:4px"><strong style="font-size:13px;color:var(--text-2)" data-i18n="Cloudflare edge requests">Cloudflare edge requests</strong>
+        <span style="font-size:12px;color:var(--muted)" data-i18n="cf-help"> — optional, advanced. The tracking script only sees visitors whose browser ran JavaScript. AI crawlers and scrapers fetch your HTML and leave, so they never appear. Cloudflare saw all of them: add a read-only API token and the daily job pulls those request counts, so your dashboard can show what the script missed. Leave it empty and nothing changes.</span></div>
       <div class="full helpbox" style="margin-bottom:4px">
         <span data-i18n="cf-steps">In the Cloudflare dashboard: <b>My Profile → API Tokens → Create Token → Create Custom Token</b>. Give it exactly these two permissions, both read-only:</span>
-        <div style="margin:6px 0 6px 0;font-family:ui-monospace,monospace;color:#c7cdd8">Zone · Zone · Read<br>Zone · Analytics · Read</div>
+        <div style="margin:6px 0 6px 0;font-family:ui-monospace,monospace;color:var(--text-2)">Zone · Zone · Read<br>Zone · Analytics · Read</div>
         <span data-i18n="cf-steps2">Under <i>Zone Resources</i> choose the zones your sites are on (or all zones in the account), then create the token and paste it below.</span>
-        <a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" rel="noopener noreferrer" style="color:#7ab3ff;text-decoration:none;display:inline-block;margin-top:6px" data-i18n="Open Cloudflare API Tokens ↗">Open Cloudflare API Tokens ↗</a>
+        <a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" rel="noopener noreferrer" style="color:var(--link);text-decoration:none;display:inline-block;margin-top:6px" data-i18n="Open Cloudflare API Tokens ↗">Open Cloudflare API Tokens ↗</a>
       </div>
-      <div class="full"><label><span data-i18n="Cloudflare API token">Cloudflare API token</span> <span id="cfKeyState" style="color:#8b93a1"></span>
+      <div class="full"><label><span data-i18n="Cloudflare API token">Cloudflare API token</span> <span id="cfKeyState" style="color:var(--muted)"></span>
         <input id="cfToken" type="password" maxlength="200" autocomplete="off" placeholder="••••••••••••••••"></label></div>
       <p class="err" id="cfMsg"></p>
-      <div class="full" id="cfState" style="font-size:12px;color:#8b93a1"></div>
+      <div class="full" id="cfState" style="font-size:12px;color:var(--muted)"></div>
       <div class="actions"><button type="submit" data-i18n="Save & check">Save &amp; check</button>
       <button type="button" id="cfTest" data-i18n="Re-check">Re-check</button>
       <button type="button" id="cfClear" class="danger" data-i18n="Remove">Remove</button></div>
     </form>
     <form class="create" id="storageSettings" style="margin-top:16px;border-top:1px solid var(--border);padding-top:16px" onsubmit="return false">
-      <div class="full" style="margin-bottom:4px"><strong style="font-size:13px;color:#c7cdd8" data-i18n="Storage & retention">Storage &amp; retention</strong>
-        <span style="font-size:12px;color:#8b93a1" data-i18n="storage-help"> — raw event rows are what fills the D1 database (roughly 0.8 KB each with indexes; a pageview produces several once behavior heartbeats are counted). Dashboards read from rollups that are kept forever; the windows below only decide how far back visitor journeys and the suspicious-visitor drill-down reach. Set them in <code>config.local.toml [retention]</code>, then redeploy the cron and console workers.</span></div>
+      <div class="full" style="margin-bottom:4px"><strong style="font-size:13px;color:var(--text-2)" data-i18n="Storage & retention">Storage &amp; retention</strong>
+        <span style="font-size:12px;color:var(--muted)" data-i18n="storage-help"> — raw event rows are what fills the D1 database (roughly 0.8 KB each with indexes; a pageview produces several once behavior heartbeats are counted). Dashboards read from rollups that are kept forever; the windows below only decide how far back visitor journeys and the suspicious-visitor drill-down reach. Set them in <code>config.local.toml [retention]</code>, then redeploy the cron and console workers.</span></div>
       <div class="full" id="storageState"><p class="loading" data-i18n="loading…">loading…</p></div>
       <div class="actions"><button type="button" id="storagePurge" data-i18n="Run purge now">Run purge now</button>
         <button type="button" id="storageRefresh" data-i18n="Refresh">Refresh</button></div>
@@ -254,7 +256,7 @@ async function loadSites() {
   const el = document.getElementById('sites');
   if (!sites.length) {
     el.innerHTML = `<p class="empty">${te('No sites yet — use the “＋ New site” button to add one.')}<br>`
-      + `${te('Just deployed?')} <a href="/health.html" style="color:#7ab3ff;text-decoration:none">${te('Run the self-check ↗')}</a></p>`;
+      + `${te('Just deployed?')} <a href="/health.html" style="color:var(--link);text-decoration:none">${te('Run the self-check ↗')}</a></p>`;
     return;
   }
   // one card per site, each showing its own overview so all sites' numbers
@@ -317,12 +319,12 @@ async function loadRanking() {
   const pending = sites.every((s) => !s.external_pv && !s.internal_pv) && sites.some((s) => s.clean_pv > 0);
   const dash = `<span class="muted" title="${te('populated by the hourly rollup — check back after :05')}">—</span>`;
   const body = sites.map((s, i) => `<tr>
-    <td style="color:#8b93a1">${i + 1}</td>
+    <td style="color:var(--muted)">${i + 1}</td>
     <td><a href="/site.html?id=${esc(s.site_id)}">${esc(s.name)}</a></td>
     <td class="num"><b>${pending ? dash : fmt(s.external_pv)}</b></td>
-    <td class="num" style="color:#8b93a1">${pending ? dash : fmt(s.internal_pv)}</td>
+    <td class="num" style="color:var(--muted)">${pending ? dash : fmt(s.internal_pv)}</td>
     <td class="num">${fmt(s.clean_pv)}</td>
-    <td class="num" style="color:#8b93a1">${fmt(s.pv)}</td>
+    <td class="num" style="color:var(--muted)">${fmt(s.pv)}</td>
     <td class="num">${s.quality_score}%</td>
   </tr>`).join('');
   document.getElementById('ranking').innerHTML = `<table>
@@ -371,7 +373,7 @@ document.getElementById('tzSettings').addEventListener('submit', async (e) => {
   const r = await guard(await fetch('/api/settings/timezone', {
     method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ timezone: tz }),
   }));
-  if (r.ok) { userTz = tz; document.getElementById('tz').value = tz; el.style.color = '#6ee7a0'; el.textContent = t('saved'); }
+  if (r.ok) { userTz = tz; document.getElementById('tz').value = tz; el.style.color = 'var(--good-text)'; el.textContent = t('saved'); }
   else { el.style.color = ''; el.textContent = t('save failed'); }
 });
 
@@ -409,11 +411,14 @@ document.getElementById('logout').addEventListener('click', async () => {
   location.href = '/login.html';
 });
 
-// apply configured branding to the header, favicon and title (console is dark,
-// so the header uses the LIGHT logo; the dark logo is for light backgrounds).
+// Select the logo ink color for the effective surface theme.
+let currentBranding = null;
+document.addEventListener('pvuv:theme', () => { if (currentBranding) applyBranding(currentBranding); });
 function applyBranding(b) {
+  currentBranding = b;
   const name = (b.name || '').trim() || 'pvuv.ai';
-  const logo = b.logo_light || b.logo_dark;
+  const logo = document.documentElement.dataset.theme === 'light'
+    ? (b.logo_dark || b.logo_light) : (b.logo_light || b.logo_dark);
   const brand = document.getElementById('brand');
   brand.innerHTML = logo ? `<img class="logo" src="${esc(logo)}" alt="${esc(name)}">` : esc(name);
   document.title = name + ' — Sites';
@@ -450,7 +455,7 @@ document.getElementById('homeSettings').addEventListener('submit', async (e) => 
     }),
   }));
   const el = document.getElementById('hsMsg');
-  el.style.color = r.ok ? '#6ee7a0' : '';
+  el.style.color = r.ok ? 'var(--good-text)' : '';
   el.textContent = r.ok ? t('saved') : t('save failed');
   if (r.ok) loadHomeSettings(); // re-apply header/favicon immediately
 });
@@ -480,13 +485,13 @@ async function loadTokens() {
   const live = (d.tokens || []).filter((x) => !x.revoked_at);
   if (!live.length) { box.textContent = t('No tokens yet.'); return; }
   box.innerHTML = '<table style="width:100%;border-collapse:collapse;margin-top:4px">'
-    + live.map((x) => `<tr style="border-top:1px solid #1e2530">
+    + live.map((x) => `<tr style="border-top:1px solid var(--border)">
         <td style="padding:5px 0">${esc(x.name)}</td>
-        <td style="color:#c7cdd8"><code>${esc(x.prefix)}…</code></td>
+        <td style="color:var(--text-2)"><code>${esc(x.prefix)}…</code></td>
         <td>${x.site_id ? esc(x.site_id) : te('all sites')}</td>
-        <td style="color:#8b93a1">${x.last_used_at ? te('used') + ' ' + esc(new Date(x.last_used_at).toISOString().slice(0, 10)) : te('never used')}</td>
+        <td style="color:var(--muted)">${x.last_used_at ? te('used') + ' ' + esc(new Date(x.last_used_at).toISOString().slice(0, 10)) : te('never used')}</td>
         <td style="text-align:right"><button type="button" data-revoke="${esc(x.token_id)}"
-          style="background:none;border:1px solid #5a2020;color:#f87171;border-radius:5px;padding:2px 8px;cursor:pointer;font-size:11px">${te('Revoke')}</button></td>
+          style="background:none;border:1px solid var(--bad-border);color:var(--bad);border-radius:5px;padding:2px 8px;cursor:pointer;font-size:11px">${te('Revoke')}</button></td>
       </tr>`).join('') + '</table>';
   box.querySelectorAll('[data-revoke]').forEach((b) => b.addEventListener('click', async () => {
     if (!confirm(t('Revoke this token? Anything using it stops working immediately.'))) return;
@@ -542,7 +547,7 @@ document.getElementById('storagePurge').addEventListener('click', async () => {
   try {
     const d = await (await guard(await fetch('/api/storage/purge', { method: 'POST' }))).json();
     msg.textContent = `${t('Done:')} ${d.dropped_partitions.length} ${t('partitions dropped')}, ${fmt(d.pulse_rows_deleted)} ${t('heartbeats')}, ${fmt(d.bot_rows_deleted)} ${t('bot / crawler')}, ${fmt(d.sessions_deleted)} ${t('sessions')}, ${fmt(d.profiles_deleted)} ${t('profiles')}${d.more_pending ? ` — ${t('more remains; run again or let the nightly job continue')}` : ''}${d.errors && d.errors.length ? ` · ${d.errors.join(' | ')}` : ''}`;
-    msg.style.color = d.ok ? '#6ee7a0' : '';
+    msg.style.color = d.ok ? 'var(--good-text)' : '';
     loadStorage();
   } catch { msg.textContent = t('failed'); }
   btn.disabled = false;
@@ -557,7 +562,7 @@ async function loadBotdir() {
     box.innerHTML = `<b>${esc(String(d.count))}</b> ${te('bots imported')}`
       + (d.skipped ? ` · ${esc(String(d.skipped))} ${te('skipped')}` : '')
       + ` · ${te('updated')} ${esc(new Date(d.updated_at).toISOString().slice(0, 16).replace('T', ' '))}<br>`
-      + cats.map(([c, n]) => `${esc(c)} <span style="color:#c7cdd8">${esc(String(n))}</span>`).join(' · ');
+      + cats.map(([c, n]) => `${esc(c)} <span style="color:var(--text-2)">${esc(String(n))}</span>`).join(' · ');
   } catch { box.textContent = ''; }
 }
 document.getElementById('botdirSettings').addEventListener('submit', async (e) => {
@@ -576,7 +581,7 @@ document.getElementById('botdirSettings').addEventListener('submit', async (e) =
   }));
   const d = await r.json().catch(() => ({}));
   if (!r.ok) { msg.textContent = d.error ? t(d.error) : t('Import failed.'); return; }
-  msg.style.color = '#6ee7a0';
+  msg.style.color = 'var(--good-text)';
   msg.textContent = t('Imported {n} bots.').replace('{n}', d.count);
   document.getElementById('botdirText').value = '';
   document.getElementById('botdirFile').value = '';
@@ -614,7 +619,7 @@ document.getElementById('aiSettings').addEventListener('submit', async (e) => {
   }));
   const el = document.getElementById('aiMsg');
   const body = await r.json().catch(() => ({}));
-  el.style.color = r.ok ? '#6ee7a0' : '';
+  el.style.color = r.ok ? 'var(--good-text)' : '';
   el.textContent = r.ok ? t('saved') : (body.error || t('save failed'));
   if (r.ok) { document.getElementById('aiKey').value = ''; loadAiSettings(); }
 });
@@ -635,7 +640,7 @@ function renderCfState(d) {
   if (!s) { box.textContent = t('Saved. The first pull runs with tonight’s daily job.'); return; }
   const when = esc(new Date(s.checked_at).toISOString().slice(0, 16).replace('T', ' '));
   if (s.error) {
-    box.innerHTML = `<span style="color:#f0a0a0">${te('Last check failed')} · ${when}</span><br>`
+    box.innerHTML = `<span style="color:var(--bad-text)">${te('Last check failed')} · ${when}</span><br>`
       + `<span style="font-family:ui-monospace,monospace">${esc(s.error)}</span>`;
     return;
   }
@@ -658,11 +663,11 @@ async function saveCf(token) {
   if (!r.ok) {
     // Cloudflare's own message, verbatim — "Authentication error" vs a missing
     // permission are different fixes and the deployer needs to know which
-    msg.style.color = '#f0a0a0';
+    msg.style.color = 'var(--bad-text)';
     msg.textContent = d.error || t('Could not verify that token.');
     return;
   }
-  msg.style.color = '#6ee7a0';
+  msg.style.color = 'var(--good-text)';
   const matched = (d.sites || []).filter((s) => s.zone);
   msg.textContent = matched.length
     ? t('Token works. Matched {n} site(s): ').replace('{n}', matched.length)
