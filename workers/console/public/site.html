@@ -103,7 +103,15 @@
   /* first-run */
   .onboard { margin: 0 0 18px; border-color: var(--info-border); background: var(--info-bg); }
   .onboard pre { margin: 0; background: var(--code-bg); border: 1px solid var(--good-border); border-radius: var(--radius); padding: 12px 14px; white-space: pre-wrap; word-break: break-all; font: 12.5px/1.5 var(--mono); color: var(--good-text); }
-  body.onboarding main > :not(#onboard):not(.secnav) { display: none; }
+  body.onboarding main > :not(#onboard):not(.secnav):not(#siteSettings) { display: none; }
+  #siteSettings { margin-bottom: 18px; }
+  #siteSettings .settings-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  #siteSettings h2 { margin: 0; }
+  #siteSettings details { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px; }
+  #siteSettings summary { cursor: pointer; color: var(--bad-text); font-weight: 600; }
+  #deleteSiteForm { max-width: 65ch; }
+  #deleteSiteName { display: block; width: 100%; margin: 6px 0 12px; }
+  #deleteSiteError { color: var(--bad); }
   body.onboarding .secnav { visibility: hidden; }
   /* mobile: suspicious-visitor cards replace the wide table */
   .mcards { display: none; }
@@ -155,10 +163,29 @@
   <button id="embedBtn" class="btn" title="The tracking snippet for this site" data-i18n-title="The tracking snippet for this site">&lt;/&gt; <span data-i18n="Embed code">Embed code</span></button>
   <button id="shareBtn" class="btn" title="Read-only public dashboard link">🔗 <span data-i18n="Share link">Share link</span></button>
   <button id="dlBtn" class="btn" title="Download all data for the selected range as JSON">⬇ <span data-i18n="Download data">Download data</span></button>
+  <button id="siteSettingsBtn" class="btn" aria-expanded="false" aria-controls="siteSettings" disabled data-i18n="Site settings">Site settings</button>
   </div>
 </header>
 <main>
   <nav class="secnav" aria-label="Sections"><ul id="secnav"></ul></nav>
+  <section id="siteSettings" class="panel" aria-labelledby="siteSettingsTitle" hidden>
+    <div class="settings-head">
+      <h2 id="siteSettingsTitle" data-i18n="Site settings">Site settings</h2>
+      <button id="closeSiteSettings" class="btn" data-i18n="Close">Close</button>
+    </div>
+    <p><strong id="deleteTargetName"></strong> <span class="muted" id="deleteTargetDomain"></span></p>
+    <details id="deleteSiteDetails">
+      <summary data-i18n="Delete site">Delete site</summary>
+      <form id="deleteSiteForm">
+        <p data-i18n="delete-site-warning">Permanently deletes this site, all its analytics, reports, funnels and site-specific API tokens. Shared links stop working. This cannot be undone.</p>
+        <p class="muted" data-i18n="delete-site-snippet">Remove the tracking snippet from your website too. New events will no longer be stored.</p>
+        <label for="deleteSiteName" data-i18n="Type the exact site name to confirm">Type the exact site name to confirm</label>
+        <input id="deleteSiteName" type="text" maxlength="100" autocomplete="off" spellcheck="false" required aria-describedby="deleteTargetName deleteSiteError">
+        <button id="deleteSiteConfirm" class="btn danger" type="submit" disabled data-i18n="Permanently delete site">Permanently delete site</button>
+        <p id="deleteSiteError" role="alert"></p>
+      </form>
+    </details>
+  </section>
   <!-- first-run state: shown instead of the dashboard until the site has recorded a single event -->
   <section class="onboard panel" id="onboard" hidden>
     <h2 style="margin:0 0 6px;color:var(--text)" data-i18n="Waiting for the first visit">Waiting for the first visit</h2>
@@ -1472,8 +1499,66 @@ async function loadSiteName() {
   document.getElementById('titleText').textContent = siteName;
   setTitle();
   const me = allSites.find((x) => x.site_id === site);
+  if (me) {
+    document.getElementById('siteSettingsBtn').disabled = false;
+    document.getElementById('deleteTargetName').textContent = me.name;
+    document.getElementById('deleteTargetDomain').textContent = siteDomain(me);
+  }
   if (me && me.has_data === 0) startOnboarding(me);
 }
+
+let deletingSite = false;
+const siteSettingsBtn = document.getElementById('siteSettingsBtn');
+const deleteSiteName = document.getElementById('deleteSiteName');
+const deleteSiteConfirm = document.getElementById('deleteSiteConfirm');
+function toggleSiteSettings(open) {
+  document.getElementById('siteSettings').hidden = !open;
+  siteSettingsBtn.setAttribute('aria-expanded', String(open));
+  if (open) document.getElementById('closeSiteSettings').focus();
+  else {
+    document.getElementById('deleteSiteDetails').open = false;
+    deleteSiteName.value = '';
+    deleteSiteConfirm.disabled = true;
+    document.getElementById('deleteSiteError').textContent = '';
+    siteSettingsBtn.focus();
+  }
+}
+siteSettingsBtn.addEventListener('click', () => toggleSiteSettings(document.getElementById('siteSettings').hidden));
+document.getElementById('closeSiteSettings').addEventListener('click', () => toggleSiteSettings(false));
+deleteSiteName.addEventListener('input', () => {
+  const current = allSites.find((s) => s.site_id === site);
+  deleteSiteConfirm.disabled = deletingSite || !current || deleteSiteName.value !== current.name;
+});
+document.getElementById('deleteSiteForm').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const current = allSites.find((s) => s.site_id === site);
+  if (deletingSite || !current || deleteSiteName.value !== current.name) return;
+  deletingSite = true;
+  deleteSiteConfirm.disabled = true;
+  deleteSiteName.disabled = true;
+  siteSettingsBtn.disabled = true;
+  document.getElementById('closeSiteSettings').disabled = true;
+  deleteSiteConfirm.textContent = t('Deleting…');
+  const error = document.getElementById('deleteSiteError');
+  error.textContent = '';
+  try {
+    const response = await fetch(`/api/sites/${site}`, {
+      method: 'DELETE', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ name: current.name }),
+    });
+    if (response.status === 401) { location.href = '/login.html'; return; }
+    if (!response.ok && response.status !== 404) throw new Error('delete failed');
+    location.replace('/sites.html?deleted=1');
+  } catch {
+    error.textContent = t('Could not delete the site. Please retry.');
+    deletingSite = false;
+    deleteSiteName.disabled = false;
+    siteSettingsBtn.disabled = false;
+    document.getElementById('closeSiteSettings').disabled = false;
+    deleteSiteConfirm.textContent = t('Permanently delete site');
+    deleteSiteConfirm.disabled = deleteSiteName.value !== current.name;
+  }
+});
 
 // ── the tracking snippet. ONE builder, used by both the first-run screen and
 // the Embed-code button, so the two can never drift — the snippet has to stay

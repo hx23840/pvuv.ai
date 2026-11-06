@@ -9,6 +9,7 @@
  */
 
 import type { Verdict, ScoreStage, XPayload } from './flags';
+import { siteInsertGuardSQL } from './site-guard';
 
 // ---------------------------------------------------------------------------
 // Wire format (client → /in). Content-Type: text/plain, single or array ≤10.
@@ -326,6 +327,7 @@ export function eventsTableDDL(suffix: string): string[] {
       created_at INTEGER NOT NULL
     )`,
     ...eventsIndexDDL(suffix),
+    siteInsertGuardSQL(t),
   ];
 }
 

@@ -22,6 +22,7 @@
 import { parsePeriod, siteTimezone, overview, sitesSummary, realtime, timeseries, breakdown, quality, alerts, anomalies, funnel, funnelDropoff, traffic, visitorsList, visitorProfile, ranking, adguardImpact, edge, vitals, conversionTiming, ApiError, FILTERABLE, type Filter, type FunnelStep } from '../../api/src/queries';
 import { parseBotDirectory } from '../../../shared/botdir';
 import { createToken } from '../../../shared/tokens';
+import { purgeSite } from './delete-site';
 import { verifySession, SESSION_COOKIE } from '../../api/src/auth';
 import { generateSiteId, hmacSign, serializeCookie } from '../../../shared/ids';
 import { runDiagnostics, probeEvent } from './diagnostics';
@@ -619,6 +620,29 @@ async function api(request: Request, env: Env, url: URL): Promise<Response> {
       return json({ sites: rows.results });
     }
     if (request.method === 'POST') return createSite(request, env, user);
+  }
+
+  const deleteMatch = path.match(/^\/api\/sites\/([A-Za-z0-9]{4,16})$/);
+  if (deleteMatch && request.method === 'DELETE') {
+    // This destructive action is console-only, authenticated above and same-origin.
+    if (request.headers.get('origin') !== url.origin) throw new ApiError(403, 'same-origin request required');
+    if (!request.headers.get('content-type')?.includes('application/json')) throw new ApiError(415, 'JSON required');
+    const siteId = deleteMatch[1];
+    const site = await env.DB.prepare('SELECT owner_id, name FROM sites WHERE site_id = ?')
+      .bind(siteId).first<{ owner_id: string; name: string }>();
+    if (!site) throw new ApiError(404, 'site not found');
+    if (site.owner_id !== user) throw new ApiError(403, 'not your site');
+    let body: unknown;
+    try { body = await request.json(); } catch { throw new ApiError(400, 'bad json'); }
+    if (!body || typeof body !== 'object' || !('name' in body) || body.name !== site.name) {
+      throw new ApiError(400, 'site name does not match');
+    }
+    await purgeSite(env.DB, siteId, user, site.name);
+    // KV is eventually consistent. The database guards also discard stale
+    // queued events during the existing 300-second site-cache window.
+    try { await env.SITE_CONFIG.delete(`site:${siteId}`); }
+    catch { console.error('deleted site config invalidation failed', siteId); }
+    return json({ ok: true });
   }
 
   // public-dashboard sharing: enable mints a fresh random token (also rotates

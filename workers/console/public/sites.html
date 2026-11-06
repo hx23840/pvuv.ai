@@ -61,6 +61,8 @@
   </div>
 </header>
 <main>
+  <p id="siteDeletedNotice" role="status" hidden data-i18n="Site deleted.">Site deleted.</p>
+  <script>document.getElementById('siteDeletedNotice').hidden = new URLSearchParams(location.search).get('deleted') !== '1';</script>
   <div class="head">
     <h2 data-i18n="Your sites">Your sites</h2>
     <div class="toolbar">

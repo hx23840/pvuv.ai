@@ -75,6 +75,14 @@ The console, login page and shared dashboards support **System**, **Light** and 
 
 Theme behavior checks: `npm run test:theme`.
 
+## Delete a site
+
+Open a site, choose **Site settings → Delete site**, then type its exact name and choose **Permanently delete site**. This removes the site and its analytics across all retained event partitions, sessions, profiles, identities, rollups, reports, funnels and site-specific API tokens. Public dashboard links stop working. Other sites and owner-wide settings/tokens are preserved. Deletion cannot be undone; remove the tracking snippet from the website as well.
+
+The deletion commits as one database transaction. Insert guards discard queued events and in-flight reports after deletion, even while the edge's existing site-config cache expires (up to five minutes). Instance-wide bot blocklist entries retain their normal expiry because they may protect other sites too. Deploy the updated **consumer and cron workers before the console** so newly created event partitions also enforce the guard. No data is deleted by deployment.
+
+Deletion integration checks (Node 22.13+): `npm run test:delete-site`.
+
 ## Architecture
 
 ```

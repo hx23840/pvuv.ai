@@ -26,6 +26,16 @@
   // implicit identity dictionary (no entry needed).
   var DICT = {
     zh: {
+      'Site settings': '站点设置',
+      'Close': '关闭',
+      'Delete site': '删除站点',
+      'delete-site-warning': '将永久删除此站点及其全部统计数据、报告、漏斗和站点专用 API 令牌。公开分享链接也会失效。此操作无法撤销。',
+      'delete-site-snippet': '也请从你的网站移除统计脚本。新的事件将不再写入。',
+      'Type the exact site name to confirm': '输入完整站点名称以确认',
+      'Permanently delete site': '永久删除站点',
+      'Deleting…': '正在删除…',
+      'Could not delete the site. Please retry.': '删除失败，请重试。',
+      'Site deleted.': '站点已删除。',
       'API tokens': 'API 令牌',
       'token-help': ' — 只读凭证,供 CLI、MCP 服务器(让你自己的 Chatbot 查询数据)以及其他集成使用。仅在创建时显示一次。',
       'Token name': '令牌名称',
